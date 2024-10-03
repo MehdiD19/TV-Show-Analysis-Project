@@ -1,5 +1,5 @@
 import gradio as gr
-from Code.theme_classifier import ThemeClassifier
+from theme_classifier.theme_classifier import ThemeClassifier
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
