@@ -39,7 +39,7 @@ class ThemeClassifier:
             script_batches.append(sent)
 
         #Run the model 
-        theme_output = self.theme_classifier(script_batches[:2], self.theme_list, multi_label=True)
+        theme_output = self.theme_classifier(script_batches, self.theme_list, multi_label=True)
 
         #Wrangle the output
         themes = {}
@@ -63,7 +63,6 @@ class ThemeClassifier:
 
         #Load the dataset
         df = load_subtitles(dataset_path)
-        df= df.head(2)
 
         #Run the Inference
         output_themes= df["script"].apply(self.get_themes_inference)
