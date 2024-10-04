@@ -7,14 +7,14 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 
 def create_theme_plot(output_df):
-    fig, ax = plt.subplots(figsize=(10, 6))  # Adjust the figure size as needed
-    sns.barplot(data=output_df, x='Theme', y='Score', ax=ax, palette='viridis')  # Use a color palette for aesthetics
-    ax.set_title('Series Themes', fontsize=16)  # Set the title of the plot
-    ax.set_xlabel('Theme', fontsize=14)  # Set the x-axis label
-    ax.set_ylabel('Score', fontsize=14)  # Set the y-axis label
-    plt.xticks(rotation=90)  # Rotate x-ticks for better readability
-    plt.tight_layout()  # Adjust layout to fit everything nicely
-    plt.close(fig)  # Close the figure to prevent it from displaying immediately
+    fig, ax = plt.subplots(figsize=(10, 6))  
+    sns.barplot(data=output_df, x='Theme', y='Score', ax=ax, palette='viridis')  
+    ax.set_title('Series Themes', fontsize=16)  
+    ax.set_xlabel('Theme', fontsize=14)  
+    ax.set_ylabel('Score', fontsize=14)  
+    plt.xticks(rotation=90)  
+    plt.tight_layout() 
+    plt.close(fig)  
     return fig
 
 def get_themes(theme_list_str, subtitles_path, save_path):
@@ -41,6 +41,7 @@ def get_character_network(subtitles_path,ner_path):
 
 def main():
     with gr.Blocks() as iface:
+        # Theme Classification Section
         with gr.Row():
             with gr.Column():
                 gr.HTML("<h1>Theme Classification (Zero Shot Classifier)</h1>")
