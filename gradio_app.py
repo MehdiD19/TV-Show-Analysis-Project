@@ -1,5 +1,6 @@
 import gradio as gr
-from theme_classifier.theme_classifier import ThemeClassifier
+from theme_classifier import ThemeClassifier
+from character_network import NamedEntityRecognizer, CharacterNetworkGenerator
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -28,68 +29,15 @@ def get_themes(theme_list_str, subtitles_path, save_path):
     fig = create_theme_plot(output_df)
     return fig
 
-def main():
-    with gr.Blocks() as iface:
-        with gr.Row():
-            with gr.Column():
-                gr.HTML("<h1>Theme Classification (Zero Shot Classifier)</h1>")
-                with gr.Row():
-                    with gr.Column():
-                        plot = gr.Plot()
-                    with gr.Column():
-                        theme_list = gr.Textbox(label="Themes")
-                        subtitles_path = gr.Textbox(label="Script Path")
-                        save_path = gr.Textbox(label="Save Path")
-                        get_themes_button = gr.Button("Get Themes")
-                        get_themes_button.click(get_themes, inputs=[theme_list, subtitles_path, save_path], outputs=[plot])
+def get_character_network(subtitles_path,ner_path):
+    ner = NamedEntityRecognizer()
+    ner_df = ner.get_ners(subtitles_path,ner_path)
 
-    iface.launch(share=True)
+    character_network_generator = CharacterNetworkGenerator()
+    relationship_df = character_network_generator.generate_character_network(ner_df)
+    html = character_network_generator.draw_network_graph(relationship_df)
 
-
-if __name__ == "__main__":
-    main()
-"""
-import gradio as gr
-import pandas as pd
-import matplotlib.pyplot as plt
-from Code.theme_classifier import ThemeClassifier
-import os
-
-
-def get_themes(theme_list_str, subtitles_path, save_path):
-    try:
-        print("Button clicked")
-        theme_list = theme_list_str.split(",")
-        print(f"Theme list: {theme_list}")
-        theme_classifier = ThemeClassifier(theme_list)
-        output_df = theme_classifier.get_themes(subtitles_path, save_path)
-        print("Themes classified")
-
-        output_df = output_df[theme_list]
-        output_df = output_df[theme_list].sum().reset_index()
-        output_df.columns = ["Theme", "Score"]
-        print(f"Output DataFrame: \n{output_df}")
-
-        fig, ax = plt.subplots()
-        output_df.plot(kind='barh', x='Theme', y='Score', ax=ax)
-        plt.close(fig)
-        return fig
-    except Exception as e:
-        print(f"Error: {e}")
-        return gr.HTML(f"<p style='color:red;'>Error: {e}</p>")
-
-
-def simple_plot():
-    data = {
-        "Category": ["A", "B", "C"],
-        "Values": [10, 20, 30]
-    }
-    df = pd.DataFrame(data)
-    fig, ax = plt.subplots()
-    df.plot(kind='barh', x='Category', y='Values', ax=ax)
-    plt.close(fig)
-    return fig
-
+    return html
 
 def main():
     with gr.Blocks() as iface:
@@ -105,14 +53,23 @@ def main():
                         save_path = gr.Textbox(label="Save Path")
                         get_themes_button = gr.Button("Get Themes")
                         get_themes_button.click(get_themes, inputs=[theme_list, subtitles_path, save_path], outputs=[plot])
-                        simple_plot_button = gr.Button("Simple Plot")
-                        simple_plot_button.click(simple_plot, outputs=[plot])
+        
+        # Character Network Section
+        with gr.Row():
+            with gr.Column():
+                gr.HTML("<h1>Character Network (NERs and Graphs)</h1>")
+                with gr.Row():
+                    with gr.Column():
+                        network_html = gr.HTML()
+                    with gr.Column():
+                        subtitles_path = gr.Textbox(label="Subtutles or Script Path")
+                        ner_path = gr.Textbox(label="NERs save path")
+                        get_network_graph_button = gr.Button("Get Character Network")
+                        get_network_graph_button.click(get_character_network, inputs=[subtitles_path,ner_path], outputs=[network_html])
+
 
     iface.launch(share=True)
 
 
 if __name__ == "__main__":
     main()
-
-
-"""
