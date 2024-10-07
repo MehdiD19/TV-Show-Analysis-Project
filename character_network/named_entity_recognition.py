@@ -17,12 +17,13 @@ class NamedEntityRecognizer:
     def load_model(self):
         nlp = spacy.load("en_core_web_trf")
         return nlp
-
+    
+    #Method to get first name entities from a script
     def get_ners_inference(self,script):
         script_sentences = sent_tokenize(script)
-
         ner_output = []
-
+        
+        #We go through each sentence in the script and get the first name entities
         for sentence in script_sentences:
             doc = self.nlp_model(sentence)
             ners = set()
@@ -35,14 +36,15 @@ class NamedEntityRecognizer:
             ner_output.append(ners)
 
         return ner_output
-
+    
+    #Method to get ners from a dataset (two options: if there is already a file in the save path or not)
     def get_ners(self,dataset_path,save_path=None):
         if save_path is not None and os.path.exists(save_path):
             df = pd.read_csv(save_path)
             df['ners'] = df['ners'].apply(lambda x: literal_eval(x) if isinstance(x,str) else x)
             return df
 
-        # load dataset 
+        # Load dataset 
         df = load_subtitles(dataset_path)
 
         # Run Inference

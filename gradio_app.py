@@ -6,6 +6,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 
+#Function to create the plot of scores
 def create_theme_plot(output_df):
     fig, ax = plt.subplots(figsize=(10, 6))  
     sns.barplot(data=output_df, x='Theme', y='Score', ax=ax, palette='viridis')  
@@ -17,18 +18,20 @@ def create_theme_plot(output_df):
     plt.close(fig)  
     return fig
 
-def get_themes(theme_list_str, subtitles_path, save_path):
+#Function to get themes and return the plot of scores
+def get_themes(theme_list_str, subtitles_path, save_path):          
     theme_list = theme_list_str.split(",")
-    theme_classifier = ThemeClassifier(theme_list)
+    theme_classifier = ThemeClassifier(theme_list)          #Initialize the ThemeClassifier class
     output_df = theme_classifier.get_themes(subtitles_path, save_path)
 
     output_df = output_df[theme_list]
-    output_df = output_df[theme_list].sum().reset_index()
+    output_df = output_df[theme_list].sum().reset_index()       #Sum the scores of the themes
     output_df.columns = ["Theme", "Score"] 
     
     fig = create_theme_plot(output_df)
     return fig
 
+#Function to get the character network
 def get_character_network(subtitles_path,ner_path):
     ner = NamedEntityRecognizer()
     ner_df = ner.get_ners(subtitles_path,ner_path)
@@ -41,7 +44,8 @@ def get_character_network(subtitles_path,ner_path):
 
 def main():
     with gr.Blocks() as iface:
-        # Theme Classification Section
+        
+        # Theme Classification Section 
         with gr.Row():
             with gr.Column():
                 gr.HTML("<h1>Theme Classification (Zero Shot Classifier)</h1>")

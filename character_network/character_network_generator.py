@@ -6,9 +6,13 @@ class CharacterNetworkGenerator():
     def __init__(self):
         pass
 
+#Generate the character network based on the named entities recognized in the script
+#We consider a relationship between two entities if they appear in the same window of 10 sentences
+#It return a data frame with the relationships between the entities and their number of appearances
+
     def generate_character_network(self,df):
 
-        windows=10
+        windows=10                 # Number of windows to consider for the relationship
         entity_relationship = []
 
         for row in df['ners']:
@@ -34,6 +38,9 @@ class CharacterNetworkGenerator():
 
         return relationship_df
     
+#Draw the network graph based on 200 most important relationships between the entities
+#We first create the network graph using the NetworkX library and then we convert it to a Pyvis network graph
+
     def draw_network_graph(self,relationship_df):
         relationship_df = relationship_df.sort_values('value', ascending=False)
         relationship_df = relationship_df.head(200)
