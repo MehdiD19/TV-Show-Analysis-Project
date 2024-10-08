@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-def load_subtitles(dataset_path, number_of_scripts=10):
+def load_subtitles(dataset_path, number_of_scripts=1):
     df = pd.read_csv(dataset_path)
     #Get rid of the the 1st column
     df = df.drop(df.columns[0], axis=1)
