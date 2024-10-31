@@ -1,10 +1,13 @@
 import gradio as gr
 from theme_classifier import ThemeClassifier
 from character_network import NamedEntityRecognizer, CharacterNetworkGenerator
+from character_chatbot import CharacterChatBot
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
+from dotenv import load_dotenv
+load_dotenv()
 
 #Function to create the plot of scores
 def create_theme_plot(output_df):
@@ -42,6 +45,15 @@ def get_character_network(subtitles_path,ner_path):
 
     return html
 
+#Function to get the chatbot response
+def chat_wit_character_chatbot(message, history):
+    character_chatbot = CharacterChatBot("Med/ff_Llama-3-8B", 
+                                         huggingface_token=os.getenv("huggingface_token"))
+    
+    output = character_chatbot.chat(message, history)
+    output = output['content'].strip()
+    return output
+
 def main():
     with gr.Blocks() as iface:
         
@@ -72,7 +84,12 @@ def main():
                         get_network_graph_button = gr.Button("Get Character Network")
                         get_network_graph_button.click(get_character_network, inputs=[subtitles_path,ner_path], outputs=[network_html])
 
-
+        # Character Chatbot Section
+        with gr.Row():
+            with gr.Column():
+                gr.HTML("<h1>Character Chatbot</h1>")
+                gr.ChatInterface(chat_wit_character_chatbot)
+    
     iface.launch(share=True)
 
 
