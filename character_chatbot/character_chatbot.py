@@ -108,13 +108,13 @@ class CharacterChatBot():
         
         bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,
-            bnb_4bit_quant_type=" ",
+            bnb_4bit_quant_type="nf4",
             bnb_4bit_compute_dtype=torch.float16,
         )
 
         #Loading the pretrained model
         model = AutoModelForCausalLM.from_pretrained(base_model_name_or_path, 
-                                                     quantization_config= bnb_config,
+                                                      quantization_config= bnb_config,
                                                      trust_remote_code=True)
         model.config.use_cache = False
 
